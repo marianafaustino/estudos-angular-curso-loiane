@@ -1,0 +1,11 @@
+<button
+[ngStyle]="{
+    'backgroundColor': (ativo? 'blue' : 'gray'),
+    'color': (ativo? 'white' : 'black'),
+    'fontSize': tamanhoFonte + 'px'
+
+}"
+(click)="mudarAtivo()"
+>
+NgStyle
+</button>
