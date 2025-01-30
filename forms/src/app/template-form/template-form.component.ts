@@ -15,4 +15,15 @@ export class TemplateFormComponent {
   onSubmit(form: any){
     console.log(form)
   }
+
+  verificaValidTouched(campo: any){
+    return !campo.valid && campo.touched
+  }
+
+  aplicaCssErro(campo: any){
+    return {
+      'has-error': this.verificaValidTouched(campo),
+      'has-feedback': this.verificaValidTouched(campo)
+    }
+  }
 }
