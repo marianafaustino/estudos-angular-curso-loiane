@@ -26,4 +26,12 @@ export class TemplateFormComponent {
       'has-feedback': this.verificaValidTouched(campo)
     }
   }
+
+  consultaCEP(event: any){
+    if(event.target){
+      console.log(event.target.value)
+    }else {
+      console.log("Erro ao processar o cep.")
+    }
+  }
 }
