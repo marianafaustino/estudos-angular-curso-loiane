@@ -19,6 +19,11 @@ export class TemplateFormComponent {
 
   onSubmit(form: any){
     console.log(form)
+
+    this.http.post("/oi/form", JSON.stringify(form.value)).subscribe({
+      next: (data: any) => {
+        console.log(data)
+    }})
   }
 
   verificaValidTouched(campo: any){
@@ -32,7 +37,7 @@ export class TemplateFormComponent {
     }
   }
 
-  consultaCEP(event: any) {
+  consultaCEP(event: any, form: any) {
     let cep = event.target.value;
   
     if (typeof cep === 'string') {
@@ -42,9 +47,10 @@ export class TemplateFormComponent {
         const validaCep = /^[0-9]{8}$/;
   
         if (validaCep.test(cep)) {
+          this.resetaDadosForm(form)
           this.http.get(`//viacep.com.br/ws/${cep}/json`).subscribe({
             next: (data: any) => {
-              console.log(data); 
+              this.populaDadosForm(data, form)
             },
             error: (err) => {
               console.error('Erro ao buscar o CEP:', err);
@@ -55,6 +61,32 @@ export class TemplateFormComponent {
     } else {
       console.error('O valor do CEP não é uma string válida.');
     }
+  }
+
+  populaDadosForm(dados: any, formulario: any){
+    formulario.form.patchValue({
+      Endereco: {
+        cep: dados.cep,
+        complemento: dados.complemento,
+        rua: dados.logradouro,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf
+    }
+    })
+  }
+
+  resetaDadosForm(formulario: any){
+    formulario.form.patchValue({
+      Endereco: {
+        cep: null,
+        complemento: null,
+        rua: null,
+        bairro: null,
+        cidade: null,
+        estado: null
+    }
+    })
   }
   
 
