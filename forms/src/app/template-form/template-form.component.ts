@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
 
 @Component({
   selector: 'app-template-form',
@@ -6,6 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./template-form.component.css']
 })
 export class TemplateFormComponent {
+
+  constructor(private http: HttpClient){
+
+  }
 
   usuario: any = {
     nome: null,
@@ -27,11 +32,30 @@ export class TemplateFormComponent {
     }
   }
 
-  consultaCEP(event: any){
-    if(event.target){
-      console.log(event.target.value)
-    }else {
-      console.log("Erro ao processar o cep.")
+  consultaCEP(event: any) {
+    let cep = event.target.value;
+  
+    if (typeof cep === 'string') {
+      cep = cep.replace(/\D/g, ''); 
+  
+      if (cep !== "") {
+        const validaCep = /^[0-9]{8}$/;
+  
+        if (validaCep.test(cep)) {
+          this.http.get(`//viacep.com.br/ws/${cep}/json`).subscribe({
+            next: (data: any) => {
+              console.log(data); 
+            },
+            error: (err) => {
+              console.error('Erro ao buscar o CEP:', err);
+            }
+          });
+        }
+      }
+    } else {
+      console.error('O valor do CEP não é uma string válida.');
     }
   }
-}
+  
+
+  }
