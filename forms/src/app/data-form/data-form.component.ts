@@ -46,6 +46,11 @@ export class DataFormComponent {
     })
   }
 
+  get nome(): FormControl {
+    return this.formulario.get('nome') as FormControl;
+  }
+  
+
   verificaValidTouched(campo: string){
     return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
   }
@@ -137,4 +142,5 @@ export class DataFormComponent {
       }
       })
     }
+
 }

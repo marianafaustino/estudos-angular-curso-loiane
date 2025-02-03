@@ -5,7 +5,7 @@
         </div>
         <div class="col-sm-12">
             <input type="text" class="form-control" id="nome" placeholder="Nome" formControlName="nome">
-            <app-campo-control-erro [mostrarErro]="!formulario.controls['nome'].valid && formulario.controls['nome'].touched" msgErro="Nome é obrigatório."></app-campo-control-erro>
+            <app-error-msg [control]="nome" label="Nome"></app-error-msg>
     
         </div>
         

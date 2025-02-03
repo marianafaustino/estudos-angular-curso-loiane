@@ -1,0 +1,9 @@
+<div *ngIf="errorMessage != null">
+    <div>
+        <span class="glyphicon glyphicon-remove from-control-feedback" ></span>
+        <span class="sr-only" ></span>
+        <div class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+        </div>
+    </div>
+</div>
