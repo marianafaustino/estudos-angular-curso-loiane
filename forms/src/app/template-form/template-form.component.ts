@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
+import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 
 @Component({
   selector: 'app-template-form',
@@ -8,7 +9,9 @@ import { HttpClient } from '@angular/common/http'
 })
 export class TemplateFormComponent {
 
-  constructor(private http: HttpClient){
+  constructor(
+    private http: HttpClient,
+    private cepService: ConsultaCepService){
 
   }
 
@@ -39,28 +42,18 @@ export class TemplateFormComponent {
 
   consultaCEP(event: any, form: any) {
     let cep = event.target.value;
-  
-    if (typeof cep === 'string') {
-      cep = cep.replace(/\D/g, ''); 
-  
-      if (cep !== "") {
-        const validaCep = /^[0-9]{8}$/;
-  
-        if (validaCep.test(cep)) {
-          this.resetaDadosForm(form)
-          this.http.get(`//viacep.com.br/ws/${cep}/json`).subscribe({
-            next: (data: any) => {
-              this.populaDadosForm(data, form)
-            },
-            error: (err) => {
-              console.error('Erro ao buscar o CEP:', err);
-            }
-          });
+    
+    if (cep != null && cep != '') {
+      this.cepService.consultaCEP(cep)
+      .subscribe({
+        next: (data: any) => {
+          this.populaDadosForm(data, form)
+        },
+        error: (err) => {
+          console.error('Erro ao buscar o CEP:', err);
         }
-      }
-    } else {
-      console.error('O valor do CEP não é uma string válida.');
-    }
+      });
+    } 
   }
 
   populaDadosForm(dados: any, formulario: any){

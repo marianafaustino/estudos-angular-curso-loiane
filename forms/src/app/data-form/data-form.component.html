@@ -19,12 +19,24 @@
             <app-campo-control-erro [mostrarErro]="!formulario.controls['email'].valid && formulario.controls['email'].touched" msgErro="Email é obrigatório."></app-campo-control-erro>
         </div>
     </div>
+    <div class="form-group" [ngClass]="aplicaCssErro('confirmarEmail')">
+        <div class="col-sm-12">
+            <label for="confirmarEmail">Confirme o email</label>
+        </div>
+        <div class="col-sm-12">
+            <input type="email" class="form-control" id="confirmarEmail" placeholder="exemplo@email.com" formControlName="confirmarEmail" >
+            <app-campo-control-erro [mostrarErro]="!formulario.controls['confirmarEmail'].valid && formulario.controls['confirmarEmail'].touched" msgErro="Confirmar o email é obrigatório."></app-campo-control-erro>
+        </div>
+    </div>
     <div formGroupName="endereco">
         <div class="form-group">
             <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cep')">
                 <label for="cep" class="control-label">Cep</label>
-                <input type="text" class="form-control" id="cep" formControlName="cep">
-                <app-campo-control-erro [mostrarErro]="!formulario.controls['endereco.cep'].valid && formulario.controls['endereco.cep'].touched" msgErro="Cep é obrigatório."></app-campo-control-erro>
+                <input type="text" (blur)="consultaCEP()" class="form-control" id="cep" formControlName="cep">
+                <app-campo-control-erro 
+    [mostrarErro]="!(formulario.get('endereco.cep')?.valid ?? true) && (formulario.get('endereco.cep')?.touched ?? false)" 
+    msgErro="Cep é obrigatório.">
+</app-campo-control-erro>
             </div>
             <div [ngClass]="aplicaCssErro('endereco.numero')">
                 <div class="col-md-2">
@@ -62,12 +74,24 @@
             </div>
             <div class="col-md-3">
                 <label for="estado" class="control-label col-md-3">Estado</label>
-                <input type="text" class="form-control col-md-3" id="estado"  formControlName="estado">
+                <select class="form-control" id="estado" formControlName="estado">
+                    <option *ngFor="let estado of estados | async" [value]="estado.sigla">{{ estado.nome }}</option>
+                </select>
                 <app-campo-control-erro [mostrarErro]="!formulario.controls['estado'].valid && formulario.controls['estado'].touched" msgErro="Estado é obrigatório."></app-campo-control-erro>
             </div>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="form-group">
+        <div class="col-md-3">
+            <div class="checkbox">
+                <label class="checkbox-inline">
+                    <input type="checkbox" formControlName="termos">
+                    Aceito os termos
+                </label>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" >Submit</button>
     <button class="btn" (click)="resetar()">Cancelar</button>
     <app-form-debug [form]="formulario"></app-form-debug>
 </form>
