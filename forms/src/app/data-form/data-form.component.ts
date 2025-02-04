@@ -4,8 +4,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { DropdownService } from '../shared/services/dropdown.service';
 import { EstadoBr } from '../shared/models/estado-br.model';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
-import { Observable } from 'rxjs';
+import { map , switchMap, tap, of } from 'rxjs';
 import { FormValidator } from '../shared/form-validator';
+import { Cidade } from '../shared/models/cidade.model';
 
 @Component({
   selector: 'app-data-form',
@@ -14,7 +15,8 @@ import { FormValidator } from '../shared/form-validator';
 })
 export class DataFormComponent {
   formulario!: FormGroup 
-  estados!: Observable<EstadoBr[]>
+  estados!: EstadoBr[]
+  cidades!: Cidade[]
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,12 +24,12 @@ export class DataFormComponent {
     private dropdownService: DropdownService,
     private cepService: ConsultaCepService
   ){
-    /*this.dropdownService.getEstadosBr().subscribe((dados: EstadoBr[]) => {
+    this.dropdownService.getEstadosBr().subscribe((dados: EstadoBr[]) => {
       this.estados = dados;
       console.log("Estados carregados:", this.estados);
-    });*/
-    this.estados = this.dropdownService.getEstadosBr()
-
+    });
+    //this.estados = this.dropdownService.getEstadosBr()
+    
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null, [Validators.required, Validators.email]],
@@ -44,6 +46,18 @@ export class DataFormComponent {
       }),
       termos: [null]
     })
+
+    this.formulario.get('endereco.estado')?.valueChanges
+      .pipe(
+        tap(estadoSigla => console.log('Estado selecionado:', estadoSigla)),
+        map(estadoSigla => this.estados?.find(e => e.sigla === estadoSigla)), 
+        map(estado => estado ? estado.id : null), 
+        switchMap(estadoId => estadoId ? this.dropdownService.getCidades(Number(estadoId)) : of([])) 
+      )
+      .subscribe((cidades: Cidade[]) => {
+        console.log("Cidades carregadas:", cidades);
+        this.cidades = cidades;
+      });
   }
 
   get nome(): FormControl {
@@ -115,6 +129,15 @@ export class DataFormComponent {
           }
         });
       } 
+      //this.dropdownService.getCidades(8).subscribe(console.log)
+      this.formulario.get('endereco.estado')?.valueChanges
+    .pipe(
+      tap(estado => console.log('Novo estado:', estado)),
+      map(estado => this.estados.filter(e => e.sigla === estado)),
+      map(estados => estados && estados.length > 0 ? estados[0].id : of(null)),
+      switchMap(estadoId => estadoId ? this.dropdownService.getCidades(Number(estadoId)) : of([])))
+      .subscribe((cidades: Cidade[]) => this.cidades = cidades)
+
     }
 
     populaDadosForm(dados: any){

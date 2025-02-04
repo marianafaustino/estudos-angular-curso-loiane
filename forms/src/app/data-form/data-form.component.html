@@ -42,7 +42,7 @@
                 <div class="col-md-2">
                     <label for="numero" class="control-label">Número</label>
                 <input type="text" class="form-control" id="numero"  formControlName="numero">
-                <app-campo-control-erro [mostrarErro]="!formulario.controls['endereco.numero'].valid && formulario.controls['endereco.numero'].touched" msgErro="Número é obrigatório."></app-campo-control-erro>
+                <app-campo-control-erro [mostrarErro]="!(formulario.get('endereco.numero')?.valid ?? true) && (formulario.get('endereco.numero')?.touched ?? false)" msgErro="Número é obrigatório."></app-campo-control-erro>
                 </div>
             </div>
             <div>
@@ -59,25 +59,27 @@
             <div class="col-sm-12">
                 <input type="text"  formControlName="rua" class="form-control" id="rua" placeholder="Rua">
             </div>
-            <app-campo-control-erro [mostrarErro]="!formulario.controls['endereco.rua'].valid && formulario.controls['endereco.rua'].touched" msgErro="Rua é obrigatório."></app-campo-control-erro>
+            <app-campo-control-erro [mostrarErro]="!(formulario.get('endereco.rua')?.valid ?? true) && (formulario.get('endereco.rua')?.touched ?? false)" msgErro="Rua é obrigatório."></app-campo-control-erro>
         </div>
         <div class="form-group" [ngClass]="aplicaCssErro('endereco.bairro')">
             <div class="col-md-5">
                 <label for="bairro" class="control-label col-md-3">Bairro</label>
                 <input type="text" class="form-control col-md-3" id="bairro"  formControlName="bairro">
-                <app-campo-control-erro [mostrarErro]="!formulario.controls['endereco.bairro'].valid && formulario.controls['endereco.bairro'].touched" msgErro="Bairro é obrigatório."></app-campo-control-erro>
+                <app-campo-control-erro [mostrarErro]="!(formulario.get('endereco.bairro')?.valid ?? true) && (formulario.get('endereco.bairro')?.touched ?? false)" msgErro="Bairro é obrigatório."></app-campo-control-erro>
             </div>
             <div class="col-md-4">
                 <label for="cidade" class="control-label col-md-3">Cidade</label>
-                <input type="text" class="form-control col-md-3" id="cidade"  formControlName="cidade">
-                <app-campo-control-erro [mostrarErro]="!formulario.controls['endereco.cidade'].valid && formulario.controls['endereco.cidade'].touched" msgErro="Cidade é obrigatório."></app-campo-control-erro>
+                <select class="form-control" id="cidade" formControlName="cidade">
+                    <option *ngFor="let cidade of cidades" [value]="cidade.nome">{{ cidade.nome }}</option>
+                </select>
+                <app-campo-control-erro [mostrarErro]="!(formulario.get('endereco.cidade')?.valid ?? true) && (formulario.get('endereco.cidade')?.touched ?? false)" msgErro="Cidade é obrigatório."></app-campo-control-erro>
             </div>
             <div class="col-md-3">
                 <label for="estado" class="control-label col-md-3">Estado</label>
                 <select class="form-control" id="estado" formControlName="estado">
-                    <option *ngFor="let estado of estados | async" [value]="estado.sigla">{{ estado.nome }}</option>
+                    <option *ngFor="let estado of estados" [value]="estado.sigla">{{ estado.nome }}</option>
                 </select>
-                <app-campo-control-erro [mostrarErro]="!formulario.controls['estado'].valid && formulario.controls['estado'].touched" msgErro="Estado é obrigatório."></app-campo-control-erro>
+                <app-campo-control-erro [mostrarErro]="!(formulario.get('endereco.estado')?.valid ?? true) && (formulario.get('endereco.estado')?.touched ?? false)" msgErro="Estado é obrigatório."></app-campo-control-erro>
             </div>
         </div>
     </div>
